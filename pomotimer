@@ -1,0 +1,60 @@
+#!/bin/bash
+#
+# - sleeps arg1 minutes
+# - prints to stdout each minute
+# - says "done" three times at finish
+# - says "start" at start (to verify sound)
+# - uses companion wrapper "tts"
+#
+##############################################################################
+
+source ~/lib/sh/include
+require bomb
+require setenv
+require now
+
+setenv say_done_iters	1
+setenv flash_iters	7
+setenv flash_sleep	100
+
+# our internal speaker is broken at the moment
+# TODO: make this conditional on external speakers or similar
+#
+setenv playsound	0
+
+speak	()
+{
+	if ((playsound)); then
+		echo "$@" | tts
+	else
+		((noflash)) && return
+		flashscreen $flash_iters $flash_sleep
+	fi
+}
+
+arg_check ()
+{
+	if ! (($# == 1)); then
+		false; return; fi;
+
+	if [[ $1 =~ [^[:digit:]] ]]; then
+		false; return; fi;
+}
+
+main ()
+{
+	arg_check "$@" || bomb
+
+	echo "started `now`"
+	noflash=1 speak "start"
+
+	for ((i = $1; i; i--)); do
+		printf "%02u\r" $i; sleep 1m; done
+
+	echo "finished `now`"
+
+	for ((i = 0; i < say_done_iters; i++)); do
+		sleep 1; speak "finished"; done
+}
+
+main "$@"
