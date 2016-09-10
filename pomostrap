@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+#
+# bootstraps [empty] datafiles and symlink trees for pomoutils
+#
+# - give years to bootstrap as args
+# - base directory default: ~/todo/log/ (see $basedir)
+# - creates:
+#     [empty] canonical datafiles: $basedir/d/YYYYMMDD
+#     by-month symlinks: $basedir/m/YYYYMM/DD -> ../d/YYYYMMDD
+#     by-isoweek symlink: $basedir/m/YYYYWW/D -> ../d/YYYYMMDD
+#
+# todo:
+#   - add removal:
+#	find -type f -name '2016*' | xargs rm
+#	find -type l -lname '*/2016*' | xargs rm
+#	find -type d -name '2016*' | xargs rmdir
+#
+# reqs:
+#   - https://github.com/hroptatyr/dateutils >= c0a2d72 (for dseq + isoweek)
+#
+# scott@smemsh.net
+# http://smemsh.net/src/pomoutils/
+# http://spdx.org/licenses/GPL-2.0
+#
+##############################################################################
+
+# these can have a subtle effect on dates
+LANG=C
+LC_TIME=C
+
+basedir=${POMOUTILS_BASEDIR:-~/todo/log}
+
+create_datafiles ()
+{
+	yearbase=$1
+
+	cd $basedir ||
+		exit 5
+
+	test -d w/${yearbase}01 &&
+		exit 10
+
+	# we have to go by iso weeks for the main loop iterator because
+	# sometimes last week of december is ISO first year, and converse
+	# for year-end (eg 2009-W01-01 is 2008-12-29)
+	#
+	dseq \
+		-i %G%V%u \
+		-f '%Y %m %d %V %u' \
+		${yearbase}0101 $((yearbase+1))0101 \
+	| head -n -1 \
+	| while read year month monthday weeknum weekday; do
+
+		datafile=d/$year$month$monthday
+
+		mkdir -p d
+		touch $datafile
+
+		weekdir=w/$year$weeknum
+		mkdir -p $weekdir
+		ln -s ../../$datafile $weekdir/$weekday
+
+		monthdir=m/$year$month
+		mkdir -p $monthdir
+		ln -s ../../$datafile $monthdir/$monthday
+
+	done
+}
+
+main ()
+{
+	(($#)) ||
+		exit 3
+
+	(($(id -u) == 0)) &&
+		exit 15
+
+	for year; do
+		create_datafiles $year; done
+}
+
+main "$@"

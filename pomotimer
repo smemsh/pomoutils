@@ -6,6 +6,10 @@
 # - says "start" at start (to verify sound)
 # - uses companion wrapper "tts"
 #
+# scott@smemsh.net
+# http://smemsh.net/src/pomoutils/
+# http://spdx.org/licenses/GPL-2.0
+#
 ##############################################################################
 
 source ~/lib/sh/include
