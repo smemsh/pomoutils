@@ -106,7 +106,7 @@ usage:
       "cat ~/todo/log/w/`lastweek`/* | pomoreport"
   - assumes input is well-formed pomoreport data (see 'format:')
   - TODO: other examples here
-  - TODO: `lastweek` does not exist anymore!?
+  - TODO: `lastweek` was moved to utilsh
 
 format:
   - text file with successive pomoreport descriptor lines, like so:
