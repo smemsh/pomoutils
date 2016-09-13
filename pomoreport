@@ -82,8 +82,12 @@ BEGIN {
 	# format: "^[123][[:blank:]]+[a-z]+$"
 	# blanks and lines beginning with '#' are ignored
 	#
-	PTASKRC = ENVIRON["HOME"] "/.ptaskrc"
-	while (ret = (getline < PTASKRC)) {
+	if (!(POMORCFILE = ENVIRON["POMORCFILE"])) {
+		printf("ptaskrc error: %s\n", "dne")
+		abort_exit()
+	}
+
+	while (ret = (getline < POMORCFILE)) {
 		if (ret == -1) {
 			printf("ptaskrc error: %s\n", ERRNO)
 			abort_exit()
