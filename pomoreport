@@ -86,8 +86,7 @@ BEGIN {
 	while (ret = (getline < PTASKRC)) {
 		if (ret == -1) {
 			printf("ptaskrc error: %s\n", ERRNO)
-			cleanexit = 0
-			exit
+			abort_exit()
 		}
 		if (NF > 0 && $1 !~ /^#/)
 			relevance[$2] = $1
@@ -99,6 +98,7 @@ BEGIN {
 function print_color_start() { printf("\033[38;5;") }
 function print_color_end() { printf("m") }
 function reset_color() { printf("\033[0m") }
+function abort_exit() { cleanexit = 0; exit; }
 
 function \
 start_color(relevance) \
