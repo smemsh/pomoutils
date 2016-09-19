@@ -48,7 +48,7 @@ speak	()
 		echo "$@" | tts
 	else
 		((noflash)) && return
-		flashscreen $flash_iters $flash_sleep
+		xflashscreen $flash_iters $flash_sleep
 	fi
 }
 
