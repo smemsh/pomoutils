@@ -1,10 +1,26 @@
 #!/bin/bash
 #
-# - sleeps arg1 minutes
-# - prints to stdout each minute
-# - says "done" three times at finish
-# - says "start" at start (to verify sound)
-# - uses companion wrapper "tts"
+# pomotimer
+#   simple countdown timer, flashes screen at conclusion
+#
+# desc:
+#   - sleeps arg1 minutes
+#   - prints to stdout each minute
+#   - flashes screen when timer expires
+#
+# deps:
+#   - http://smemsh.net/src/ratutils/xflashscreen
+#   - http://smemsh.net/src/libsh/
+#   - (disabled) tts wrapper (espeak | aplay)
+#
+# todo:
+#   - enable code that calls tts, sound not desired
+#   - (disabled) says "done" three times at finish
+#   - (disabled) says "start" at start (to verify sound)
+#
+# stat:
+#   - author-specific hack
+#   - generalize later if other users
 #
 # scott@smemsh.net
 # http://smemsh.net/src/pomoutils/
