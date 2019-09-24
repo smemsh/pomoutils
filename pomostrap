@@ -14,6 +14,19 @@
 #       find -type f -name '2016*' | xargs rm
 #       find -type l -lname '*/2016*' | xargs rm
 #       find -type d -name '2016*' | xargs rmdir
+#   - pomostrap 2019; pomostrap 2020 -> w/201901/2 exists already
+#     because of ISO year overlap with adjacent Gregorian years, this
+#     seems to always work out to being the same symlink in both cases
+#     though so it seems harmless, but that should be proven with test
+#     inputs or thinking through it better (so far we did eg "cat <(dseq
+#     -i %G%V%u -f '%Y %m %d %V %u' 20190101 20200101) <(dseq -i %G%V%u
+#     -f '%Y %m %d %V %u' 20200101 20210101) | sort | uniq -c" and also
+#     with "uniq -c -f 4" but that ignores the month symlinks, for one,
+#     and only tests one particular year boundary).  difficult to do
+#     this correctly without using "ln -nsf", or maybe we could iterate
+#     differently than using gregorian years (but rather ISO years) as
+#     the bootstrap arg, but this would lead to unexpected results like
+#     not all of them populating
 #
 # reqs:
 #   - https://github.com/hroptatyr/dateutils >= c0a2d72 (for dseq + isoweek)
