@@ -11,9 +11,9 @@
 #
 # todo:
 #   - add removal:
-#	find -type f -name '2016*' | xargs rm
-#	find -type l -lname '*/2016*' | xargs rm
-#	find -type d -name '2016*' | xargs rmdir
+#       find -type f -name '2016*' | xargs rm
+#       find -type l -lname '*/2016*' | xargs rm
+#       find -type d -name '2016*' | xargs rmdir
 #
 # reqs:
 #   - https://github.com/hroptatyr/dateutils >= c0a2d72 (for dseq + isoweek)
