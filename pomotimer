@@ -8,73 +8,59 @@
 #   - prints to stdout each minute
 #   - flashes screen when timer expires
 #
-# deps:
-#   - http://smemsh.net/src/ratutils/xflashscreen
-#   - http://smemsh.net/src/libsh/
-#   - (disabled) tts wrapper (espeak | aplay)
-#
-# todo:
-#   - enable code that calls tts, sound not desired
-#   - (disabled) says "done" three times at finish
-#   - (disabled) says "start" at start (to verify sound)
-#
-# stat:
-#   - author-specific hack
-#   - generalize later if other users
-#
 # scott@smemsh.net
-# http://smemsh.net/src/pomoutils/
-# http://spdx.org/licenses/GPL-2.0
+# https://github.com/smemsh/pomoutils/
+# https://spdx.org/licenses/GPL-2.0
 #
-##############################################################################
 
-source ~/lib/sh/include
-require bomb
-require setenv
-require now
+if (($# != 2))
+then echo "takes 2 args: time, label" >&2; false; exit; fi
 
-setenv say_done_iters	1
-setenv flash_iters	7
-setenv flash_sleep	100
+minutes=$1
+label=$2
 
-# our internal speaker is broken at the moment
-# TODO: make this conditional on external speakers or similar
-#
-setenv playsound	0
+sleepsecs=$(($1 * 60))
 
-speak	()
+SECONDS=`date +$HISTTIMEFORMAT`
+startsecs=$SECONDS
+lastsecs=$startsecs
+#flashargs=(7 100)
+flashargs=(8 200)
+
+was_paused=0
+
+msg ()
 {
-	if ((playsound)); then
-		echo "$@" | tts
-	else
-		((noflash)) && return
-		xflashscreen $flash_iters $flash_sleep
+	printf "%s %s %s %s\n" \
+	$(date +$HISTTIMEFORMAT) "$1" $label $((SECONDS - lastsecs))
+	lastsecs=$SECONDS
+}
+
+stty -ctlecho
+
+trap stop_and_resume TSTP
+stop_and_resume () { msg stop; kill -STOP $$; was_paused=1; msg resume; }
+
+trap exit_script EXIT
+exit_script ()
+{
+	printf -v m "%s (counted %s, %sm)" \
+		$(((sleepsecs == slept)) && printf finished || printf exited) \
+		$slept \
+		$(bc <<< "scale = 2; $slept / 60") \
+	; msg "$m"
+}
+
+msg start
+
+for ((slept = 0; slept < $sleepsecs; slept++))
+do
+	sleep 1 & wait
+	# todo: probably the pause thing is racy.  the whole thing is hack
+	if (((slept % 60) == 0 || was_paused)); then
+		printf "%02u\r" $((minutes - (slept / 60)))
+		((was_paused)) && was_paused=0
 	fi
-}
+done
 
-arg_check ()
-{
-	if ! (($# == 1)); then
-		false; return; fi;
-
-	if [[ $1 =~ [^[:digit:]] ]]; then
-		false; return; fi;
-}
-
-main ()
-{
-	arg_check "$@" || bomb
-
-	echo "started `now`"
-	noflash=1 speak "start"
-
-	for ((i = $1; i; i--)); do
-		printf "%02u\r" $i; sleep 1m; done
-
-	echo "finished `now`"
-
-	for ((i = 0; i < say_done_iters; i++)); do
-		sleep 1; speak "finished"; done
-}
-
-main "$@"
+xflashscreen ${flashargs[@]}
