@@ -43,6 +43,9 @@ stty -ctlecho
 trap stop_and_resume TSTP
 stop_and_resume () { msg stop; kill -STOP $$; was_paused=1; msg resume; }
 
+trap restart_loop USR1
+restart_loop () { msg restart; loop=1; was_paused=1; msg resume; }
+
 trap exit_script EXIT
 exit_script ()
 {
@@ -61,4 +64,6 @@ while true; do msg start; for ((slept = 0; slept < sleepsecs; slept++)); do
 		printf "%02u\r" $((minutes - (slept / 60)))
 		((was_paused)) && was_paused=0
 	fi
+	if ((loop))
+	then loop=0; continue 2; fi
 done; xflashscreen ${flashargs[@]}; done
