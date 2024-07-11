@@ -13,11 +13,13 @@
 # https://spdx.org/licenses/GPL-2.0
 #
 
-if (($# != 2))
-then echo "takes 2 args: time, label" >&2; false; exit; fi
+if (($# != 1 && $# != 2))
+then echo "\
+mandatory arg1: sleeptime
+optional arg2: label"; false; exit; fi
 
 minutes=$1
-label=$2
+label=${2:--}
 
 sleepsecs=$(($1 * 60))
 
