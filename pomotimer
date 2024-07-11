@@ -53,16 +53,12 @@ exit_script ()
 	; msg "$m"
 }
 
-msg start
 
-for ((slept = 0; slept < $sleepsecs; slept++))
-do
+while true; do msg start; for ((slept = 0; slept < sleepsecs; slept++)); do
 	sleep 1 & wait
 	# todo: probably the pause thing is racy.  the whole thing is hack
 	if (((slept % 60) == 0 || was_paused)); then
 		printf "%02u\r" $((minutes - (slept / 60)))
 		((was_paused)) && was_paused=0
 	fi
-done
-
-xflashscreen ${flashargs[@]}
+done; xflashscreen ${flashargs[@]}; done
