@@ -33,8 +33,7 @@ was_paused=0
 
 msg ()
 {
-	printf "%s %s %s %s\n" \
-	$(date +$HISTTIMEFORMAT) "$1" $label $((SECONDS - lastsecs))
+	echo $(date +$HISTTIMEFORMAT) "$1" $label $((SECONDS - lastsecs))
 	lastsecs=$SECONDS
 }
 
