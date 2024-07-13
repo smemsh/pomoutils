@@ -33,7 +33,8 @@ was_paused=0
 
 msg ()
 {
-	echo $(date +$HISTTIMEFORMAT) "$1" $label $((SECONDS - lastsecs))
+	local secs=$((SECONDS - lastsecs))
+	echo $(date +$HISTTIMEFORMAT) "$1" $label $((secs / 60))m "(${secs}s)"
 	lastsecs=$SECONDS
 }
 
