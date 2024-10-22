@@ -44,7 +44,7 @@ trap stop_and_resume TSTP
 stop_and_resume () { msg stop; kill -STOP $$; was_paused=1; msg resume; }
 
 trap restart_loop USR1
-restart_loop () { msg restart; loop=1; was_paused=1; msg resume; }
+restart_loop () { msg restart; loop=1; was_paused=1; }
 
 trap exit_script EXIT
 exit_script ()
