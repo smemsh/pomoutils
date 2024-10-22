@@ -13,6 +13,9 @@
 # https://spdx.org/licenses/GPL-2.0
 #
 
+if [[ $1 == '-o' || $1 == '--once' ]]
+then let ++runonce; shift; fi
+
 if (($# != 1 && $# != 2))
 then echo "\
 mandatory arg1: sleeptime
@@ -44,7 +47,7 @@ trap stop_and_resume TSTP
 stop_and_resume () { msg stop; kill -STOP $$; was_paused=1; msg resume; }
 
 trap restart_loop USR1
-restart_loop () { msg restart; loop=1; was_paused=1; }
+restart_loop () { ((runonce)) && return; msg restart; loop=1; was_paused=1; }
 
 trap exit_script EXIT
 exit_script ()
@@ -57,13 +60,21 @@ exit_script ()
 }
 
 
-while true; do msg start; for ((slept = 0; slept < sleepsecs; slept++)); do
-	sleep 1 & wait
-	# todo: probably the pause thing is racy.  the whole thing is hack
-	if (((slept % 60) == 0 || was_paused)); then
-		printf "%02u\r" $((minutes - (slept / 60)))
-		((was_paused)) && was_paused=0
-	fi
-	if ((loop))
-	then loop=0; continue 2; fi
-done; xflashscreen ${flashargs[@]}; done
+while true
+do
+	((runonce)) && ((loopcount)) && break
+	msg start
+	for ((slept = 0; slept < sleepsecs; slept++)); do
+		sleep 1 & wait
+		((runonce))
+		# todo: probably the pause thing is racy.  the whole thing is hack
+		if (((slept % 60) == 0 || was_paused)); then
+			printf "%02u\r" $((minutes - (slept / 60)))
+			((was_paused)) && was_paused=0
+		fi
+		if ((loop))
+		then loop=0; continue 2; fi
+	done
+	xflashscreen ${flashargs[@]}
+	let ++loopcount
+done
