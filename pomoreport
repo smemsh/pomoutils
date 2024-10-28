@@ -34,7 +34,7 @@
 #       }' < $f; done
 #
 # scott@smemsh.net
-# http://smemsh.net/src/pomoutils/
+# https://github.com/smemsh/pomoutils/
 # http://spdx.org/licenses/GPL-2.0
 #
 ##############################################################################
