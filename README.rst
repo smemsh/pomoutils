@@ -1,6 +1,24 @@
 pomoutils
 ==============================================================================
 
+Note: **this repo is not developed anymore.**  For task and time
+tracking, we now use `taskwtools`__ wrappers for `taskwarrior`__
+and `timewarrior`__.
+
+We have moved `ptimer` [only] from this repo to our `utilx`__
+repo for the time being, as it's simple and we still use it to
+flash the screen ever 25m and reset it at will via signal (we
+have it bound to a key sequence bound in the window manager).
+
+Below is old/stale stuff the author doesn't use anymore.
+
+| scott@smemsh.net
+| https://github.com/smemsh/pomoutils/
+| https://spdx.org/licenses/GPL-2.0
+
+____
+
+
 Tools for reporting time spent on tasks.  Using a variant of the
 `Pomodoro Technique`__, the user keeps simple text files
 recording tasks worked on during each interval.
@@ -16,6 +34,10 @@ in a colored table (see `Examples`_).
 
 .. contents::
 
+__ https://github.com/smemsh/taskwtools/
+__ https://github.com/GothenburgBitFactory/taskwarrior/
+__ https://github.com/GothenburgBitFactory/timewarrior/
+__ https://github.com/smemsh/utilx/
 __ https://en.wikipedia.org/wiki/Pomodoro_Technique
 
 
