@@ -12,10 +12,6 @@
 #   - feed entered log files to pomoreport on stdin (see 'usage:')
 #   - pomoreport generates metrics on stdout
 #
-# status:
-#   - used by author, no other known users
-#   - please notify if using
-#
 # notes:
 #   - hardcoded intervals and match patterns (until someone else uses it ;-)
 #   - execution rate very simple, only r/w subtask quantity, no time weight
